@@ -17,8 +17,10 @@ const faker_1 = require("@faker-js/faker");
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("typeorm");
 let SeedServices = class SeedServices {
-    constructor(userRepository) {
+    constructor(userRepository, articleRepository, roleRepository) {
         this.userRepository = userRepository;
+        this.articleRepository = articleRepository;
+        this.roleRepository = roleRepository;
     }
     async createRandomUsers() {
         for (let i = 0; i < 100; i++) {
@@ -37,10 +39,25 @@ let SeedServices = class SeedServices {
         }
         console.log('Seed completed!');
     }
+    async createRandomArticles() {
+        for (let i = 0; i < 100; i++) {
+            const newUser = this.articleRepository.create({});
+            await this.userRepository.save(newUser);
+        }
+        console.log('Seed completed!');
+    }
+    async createRoles() {
+        for (let i = 0; i < 100; i++) {
+            const newUser = this.roleRepository.create({});
+            await this.userRepository.save(newUser);
+        }
+    }
 };
 exports.SeedServices = SeedServices;
 exports.SeedServices = SeedServices = __decorate([
     __param(0, (0, common_1.Inject)('USER_REPOSITORY')),
-    __metadata("design:paramtypes", [typeorm_1.Repository])
+    __metadata("design:paramtypes", [typeorm_1.Repository,
+        typeorm_1.Repository,
+        typeorm_1.Repository])
 ], SeedServices);
 //# sourceMappingURL=seed.services.js.map
