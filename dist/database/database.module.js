@@ -9,25 +9,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DatabaseModule = void 0;
 const common_1 = require("@nestjs/common");
 const database_provider_1 = require("./database.provider");
-const typeorm_1 = require("@nestjs/typeorm");
-const User_entity_1 = require("../entities/User.entity");
 let DatabaseModule = class DatabaseModule {
 };
 exports.DatabaseModule = DatabaseModule;
 exports.DatabaseModule = DatabaseModule = __decorate([
     (0, common_1.Module)({
-        imports: [
-            typeorm_1.TypeOrmModule.forRoot({
-                type: 'mysql',
-                host: process.env.DB_HOST,
-                port: parseInt(process.env.DB_PORT),
-                username: process.env.DB_USER,
-                password: process.env.DB_PASS,
-                database: process.env.DB_NAME,
-                entities: [User_entity_1.User],
-                synchronize: true,
-            }),
-        ],
         providers: [...database_provider_1.databaseProviders],
         exports: [...database_provider_1.databaseProviders],
     })
