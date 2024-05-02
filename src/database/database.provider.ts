@@ -18,6 +18,6 @@ export const databaseProviders = [
       });
 
       return dataSource.initialize();
-    },
-  },
+    }, 
+  }
 ];
