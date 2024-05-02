@@ -6,7 +6,7 @@ import { DatabaseModule } from './database/database.module';
 import { SeedModule } from './seeds/seed.module'
 
 @Module({
-  imports: [DatabaseModule, SeedModule],
+  imports: [DatabaseModule, SeedModule, ConfigModule.forRoot()],
   controllers: [AppController],
   providers: [AppService],
   
