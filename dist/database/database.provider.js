@@ -20,6 +20,6 @@ exports.databaseProviders = [
             });
             return dataSource.initialize();
         },
-    },
+    }
 ];
 //# sourceMappingURL=database.provider.js.map

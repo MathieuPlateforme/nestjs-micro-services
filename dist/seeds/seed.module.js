@@ -12,6 +12,8 @@ const seed_services_1 = require("./seed.services");
 const seed_controller_1 = require("./seed.controller");
 const database_module_1 = require("../database/database.module");
 const User_provider_1 = require("../providers/User.provider");
+const Article_provider_1 = require("../providers/Article.provider");
+const Role_provider_1 = require("../providers/Role.provider");
 let SeedModule = class SeedModule {
 };
 exports.SeedModule = SeedModule;
@@ -19,7 +21,7 @@ exports.SeedModule = SeedModule = __decorate([
     (0, common_1.Module)({
         imports: [database_module_1.DatabaseModule],
         controllers: [seed_controller_1.SeedController],
-        providers: [seed_services_1.SeedServices, ...User_provider_1.userProviders],
+        providers: [seed_services_1.SeedServices, ...User_provider_1.userProviders, ...Article_provider_1.articleProviders, ...Role_provider_1.roleProviders],
         exports: [seed_services_1.SeedServices],
     })
 ], SeedModule);
