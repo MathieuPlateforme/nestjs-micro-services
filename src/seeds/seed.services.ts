@@ -11,7 +11,9 @@ export class SeedServices {
   constructor(
     @Inject('USER_REPOSITORY')
     private readonly userRepository: Repository<User>,
+    @Inject('ARTICLE_REPOSITORY')
     private readonly articleRepository: Repository<Article>,
+    @Inject('ROLE_REPOSITORY')
     private readonly roleRepository: Repository<Role>
 
   ) {}
