@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Inject, Post } from '@nestjs/common';
 import { UserDto } from './user.dto';
-import { ClientProxy } from '@nestjs/microservices';
+import { ClientProxy, EventPattern } from '@nestjs/microservices';
 
 @Controller()
 export class AppController {
@@ -13,6 +13,6 @@ export class AppController {
 
   @Post()
   createUser(@Body() userDto: UserDto) {
-    return this.templateService.emit('create_user', userDto);
+    return this.templateService.send('create_user', userDto);
   }
 }

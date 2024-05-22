@@ -9,5 +9,6 @@ export class AppService {
 
   handleUserCreation(userDto: UserDto) {
     console.log('User created', userDto);
+    return userDto;
   }
 }
