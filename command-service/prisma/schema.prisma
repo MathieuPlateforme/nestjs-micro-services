@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = "mysql://root:toto@localhost:3306/commandService"
+}
+
+model Client {
+  id        String     @id @default(uuid())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  name      String
+  email     String     @unique
+  commandes Commande[]
+}
+
+model Commande {
+  id                String          @id @default(uuid())
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  status            String
+  client            Client          @relation(fields: [clientId], references: [id])
+  clientId          String
+  deliveryAddress   Address         @relation(references: [id], fields: [addressId])
+  deliveryAddressId String
+  lignesCommande    LigneCommande[]
+  addressId         String
+}
+
+model LigneCommande {
+  id         String   @id @default(uuid())
+  quantity   Int
+  price      Float
+  productId  String
+  commande   Commande @relation(fields: [commandeId], references: [id])
+  commandeId String
+  product    Produit  @relation(fields: [productId], references: [id])
+}
+
+model Produit {
+  id            String          @id @default(uuid())
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  name          String
+  price         Float
+  stock         Int
+  LigneCommande LigneCommande[]
+}
+
+model Address {
+  id       String     @id @default(uuid())
+  street   String
+  city     String
+  zipCode  String
+  country  String
+  Commande Commande[]
+}
