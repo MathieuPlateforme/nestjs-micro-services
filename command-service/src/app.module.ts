@@ -1,21 +1,9 @@
 import { Module } from '@nestjs/common';
-
-import { ClientsModule, Transport } from '@nestjs/microservices';
-import {CommandesModule} from "./commandes.module";
+import { CommandesModule } from './commandes.module';
+import {CommandeMessageHandler} from "./infrastructure/messaging/commande.message.handler";
 
 @Module({
-  imports: [
-    CommandesModule,
-    ClientsModule.register([
-      {
-        name: 'ORDER_SERVICE',
-        transport: Transport.TCP,
-        options: {
-          host: 'localhost',
-          port: 3001,
-        },
-      },
-    ]),
-  ],
+  imports: [CommandesModule],
+  providers: [CommandeMessageHandler],
 })
 export class AppModule {}

@@ -22,7 +22,7 @@ export class CommandeService {
         private readonly eventEmitter: EventEmitter2,
     ) {}
 
-    async créerCommande(clientId: string, address: CreateOrderDto['address'], lignes: CreateOrderDto['lines']): Promise<Commande> {
+    async creerCommande(clientId: string, address: CreateOrderDto['address'], lignes: CreateOrderDto['lines']): Promise<Commande> {
         const clientIdVo = new ClientID(clientId);
         const addressVo = new Address(address.id, address.street, address.city, address.zipCode, address.country);
         const lignesVo = lignes.map(ligne => new LigneCommande(new ProductID(ligne.productId), ligne.quantity, new Money(ligne.price, ligne.currency)));

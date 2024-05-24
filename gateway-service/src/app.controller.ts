@@ -1,31 +1,19 @@
-import { Body, Controller, Get, Inject, Post, Put } from '@nestjs/common';
-import { UserDto } from './user.dto';
-import { ClientProxy, EventPattern } from '@nestjs/microservices';
-import { CreateOrderDto } from './create-order.dto';
-import { UpdateOrderDto } from './update-order.dto';
+import { Controller, Post, Body, Get, Param, Inject } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
+import {CreateOrderDto} from "./create-order.dto";
 
-@Controller()
-export class AppController {
-  constructor(@Inject('TEMPLATE-SERVICE') private readonly templateService: ClientProxy,
-              @Inject('COMMAND-SERVICE') private readonly commandService: ClientProxy) {}
 
-  @Get()
-  getHello(): string {
-    return 'Hello World!';
-  }
+@Controller('orders')
+export class ApiGatewayController {
+  constructor(@Inject('ORDER_SERVICE') private readonly commandService: ClientProxy) {}
 
   @Post()
-  createUser(@Body() userDto: UserDto) {
-    return this.templateService.send('create_user', userDto);
+  async createOrder(@Body() createOrderDto: CreateOrderDto) {
+    return this.commandService.send('create_order', createOrderDto).toPromise();
   }
 
-  @Post('orders')
-  createOrder(@Body() order: CreateOrderDto) {
-    return this.commandService.send('create_order', order);
-  }
-
-  @Put('orders')
-  updateOrder(@Body() order: UpdateOrderDto) {
-    return this.commandService.send('update_order', order);
+  @Get(':id')
+  async getOrder(@Param('id') id: string) {
+    return this.commandService.send('get_order', id).toPromise();
   }
 }
