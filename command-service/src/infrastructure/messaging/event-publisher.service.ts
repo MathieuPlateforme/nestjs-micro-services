@@ -1,21 +1,31 @@
-// commande-service/src/infrastructure/messaging/event-publisher.service.ts
+// src/messaging/event-publisher.service.ts
 import { Injectable } from '@nestjs/common';
-import { InjectQueue } from '@nestjs/bull';
-import { Queue } from 'bull';
+import { ClientProxy, ClientProxyFactory, Transport } from '@nestjs/microservices';
 import { EventEmitter2 } from 'eventemitter2';
+import {OrderCreatedEvent} from "../../common/events/order-created.event";
+import {OrderUpdatedEvent} from "../../common/events/order-updated.event";
+import {OrderCanceledEvent} from "../../common/events/order-canceled.event";
+
 
 @Injectable()
 export class EventPublisherService {
-    constructor(
-        @InjectQueue('order_queue') private readonly orderQueue: Queue,
-        private readonly eventEmitter: EventEmitter2,
-    ) {
-        this.eventEmitter.on('OrderCreated', (event) => this.publishEvent('order.created', event));
-        this.eventEmitter.on('OrderUpdated', (event) => this.publishEvent('order.updated', event));
-        this.eventEmitter.on('OrderCanceled', (event) => this.publishEvent('order.canceled', event));
+    private client: ClientProxy;
+
+    constructor(private readonly eventEmitter: EventEmitter2) {
+        this.client = ClientProxyFactory.create({
+            transport: Transport.TCP,
+            options: {
+                host: 'localhost',
+                port: 3001,
+            },
+        });
+
+        this.eventEmitter.on('OrderCreated', (event: OrderCreatedEvent) => this.publishEvent('order.created', event));
+        this.eventEmitter.on('OrderUpdated', (event: OrderUpdatedEvent) => this.publishEvent('order.updated', event));
+        this.eventEmitter.on('OrderCanceled', (event: OrderCanceledEvent) => this.publishEvent('order.canceled', event));
     }
 
     async publishEvent(eventName: string, event: any): Promise<void> {
-        await this.orderQueue.add(eventName, event);
+        await this.client.emit(eventName, event);
     }
 }
