@@ -11,6 +11,13 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
         name: 'TEMPLATE-SERVICE',
         transport: Transport.TCP,
       },
+      {
+        name: 'COMMAND-SERVICE',
+        transport: Transport.TCP,
+        options: {
+          port: 3003
+        }
+      }
     ]),
     ConfigModule.forRoot()
   ],
