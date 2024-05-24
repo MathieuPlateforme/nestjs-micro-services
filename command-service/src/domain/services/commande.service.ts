@@ -1,41 +1,34 @@
 // src/domain/services/commande.service.ts
 import { Injectable } from '@nestjs/common';
-import { CommandeRepository } from '../../infrastructure/repositories/commande.repository';
-import { CommandeFactory } from '../factories/commande.factory';
-import { CreateOrderDto } from '../../api/dto/create-order.dto';
+import { Commande } from '../entities/commande.entity';
+import { OrderID } from '../value-objects/order-id.value-object';
 import { ClientID } from '../value-objects/client-id.value-object';
 import { Address } from '../value-objects/address.value-object';
 import { LigneCommande } from '../entities/ligne-commande.entity';
+import { ProductID } from '../value-objects/product-id.value-object';
+import { Money } from '../value-objects/money.value-object';
 import { EventEmitter2 } from 'eventemitter2';
-import { Commande } from '../entities/commande.entity';
-import { OrderID } from '../value-objects/order-id.value-object';
-import {ProductID} from "../value-objects/product-id.value-object";
-import {Money} from "../value-objects/money.value-object";
+import { CreateOrderDto } from '../../api/dto/create-order.dto';
+import {CommandeRepository} from "../../infrastructure/repositories/commande.repository";
+import {OrderCreatedEvent} from "../../common/events/order-created.event";
+import {OrderUpdatedEvent} from "../../common/events/order-updated.event";
+import {OrderCanceledEvent} from "../../common/events/order-canceled.event";
+
 
 @Injectable()
 export class CommandeService {
     constructor(
         private readonly commandeRepository: CommandeRepository,
-        private readonly commandeFactory: CommandeFactory,
         private readonly eventEmitter: EventEmitter2,
     ) {}
 
-    async créerCommande(createOrderDto: CreateOrderDto): Promise<Commande> {
-        const clientIdVo = new ClientID(createOrderDto.clientId);
-        const address = new Address(
-            createOrderDto.address.id,
-            createOrderDto.address.street,
-            createOrderDto.address.city,
-            createOrderDto.address.zipCode,
-            createOrderDto.address.country,
-        );
-        const lines = createOrderDto.lines.map(line => new LigneCommande(
-            new ProductID(line.productId),
-            line.quantity,
-            new Money(line.price, line.currency)
-        ));
-        const commande = this.commandeFactory.createCommande(clientIdVo.value, address, lines);
+    async créerCommande(clientId: string, address: CreateOrderDto['address'], lignes: CreateOrderDto['lines']): Promise<Commande> {
+        const clientIdVo = new ClientID(clientId);
+        const addressVo = new Address(address.id, address.street, address.city, address.zipCode, address.country);
+        const lignesVo = lignes.map(ligne => new LigneCommande(new ProductID(ligne.productId), ligne.quantity, new Money(ligne.price, ligne.currency)));
+        const commande = new Commande(this.commandeRepository.generateId(), clientIdVo, addressVo, lignesVo);
         await this.commandeRepository.save(commande);
+        this.eventEmitter.emit('OrderCreated', new OrderCreatedEvent(commande.id.value));
         return commande;
     }
 
@@ -50,6 +43,7 @@ export class CommandeService {
         if (commande) {
             commande.changeStatus(status);
             await this.commandeRepository.save(commande);
+            this.eventEmitter.emit('OrderUpdated', new OrderUpdatedEvent(orderId, status));
         }
     }
 
@@ -59,6 +53,7 @@ export class CommandeService {
         if (commande) {
             commande.changeStatus('Canceled');
             await this.commandeRepository.save(commande);
+            this.eventEmitter.emit('OrderCanceled', new OrderCanceledEvent(orderId));
         }
     }
 }

@@ -34,6 +34,7 @@ export class CommandeSubscriber implements OnModuleInit {
     }
 
     async handleCreateOrder(createOrderDto: CreateOrderDto) {
-        await this.commandeService.créerCommande(createOrderDto);
+        const { clientId, address, lines } = createOrderDto;
+        await this.commandeService.créerCommande(clientId, address, lines);
     }
 }
