@@ -1,18 +1,18 @@
 import { NestFactory } from '@nestjs/core';
-import { Transport, MicroserviceOptions } from '@nestjs/microservices';
 import { AppModule } from './app.module';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
-    const app = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
-        transport: Transport.TCP,
-        options: {
-            host: 'localhost',
-            port: 3003,
+    const app = await NestFactory.createMicroservice<MicroserviceOptions>(
+        AppModule,
+        {
+            transport: Transport.RMQ,
+            options: {
+                urls: ['amqp://localhost:5672'],
+                queue: 'orders-queue',
+            },
         },
-    });
-    await app.listen();
-    await app.startAllMicroservices();
-    console.log('Microservice de commande écoute sur tcp://localhost:3003');
+    );
+    app.listen();
 }
-
 bootstrap();

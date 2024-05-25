@@ -19,7 +19,7 @@ class CreateLigneCommandeDto {
 class CreateAddressDto {
     @IsString()
     @IsNotEmpty()
-    id: string;
+    id: string; // Ajout de l'ID
 
     @IsString()
     @IsNotEmpty()

@@ -1,6 +1,7 @@
 -- CreateTable
 CREATE TABLE `Client` (
     `id` VARCHAR(191) NOT NULL,
+    `idUser` INTEGER NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
@@ -18,7 +19,6 @@ CREATE TABLE `Commande` (
     `status` VARCHAR(191) NOT NULL,
     `clientId` VARCHAR(191) NOT NULL,
     `deliveryAddressId` VARCHAR(191) NOT NULL,
-    `addressId` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -61,7 +61,7 @@ CREATE TABLE `Address` (
 ALTER TABLE `Commande` ADD CONSTRAINT `Commande_clientId_fkey` FOREIGN KEY (`clientId`) REFERENCES `Client`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Commande` ADD CONSTRAINT `Commande_addressId_fkey` FOREIGN KEY (`addressId`) REFERENCES `Address`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Commande` ADD CONSTRAINT `Commande_deliveryAddressId_fkey` FOREIGN KEY (`deliveryAddressId`) REFERENCES `Address`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `LigneCommande` ADD CONSTRAINT `LigneCommande_commandeId_fkey` FOREIGN KEY (`commandeId`) REFERENCES `Commande`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

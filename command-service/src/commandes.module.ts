@@ -5,8 +5,7 @@ import {CommandeRepository} from "./infrastructure/repositories/commande.reposit
 import {CommandeService} from "./domain/services/commande.service";
 import {CommandeFactory} from "./domain/factories/commande.factory";
 import {PrismaService} from "./infrastructure/prisma/prisma.service";
-
-
+import {CommandeMessageHandler} from "./infrastructure/messaging/commande.message.handler";
 @Module({
     imports: [EventEmitterModule.forRoot()],
     providers: [
@@ -14,6 +13,7 @@ import {PrismaService} from "./infrastructure/prisma/prisma.service";
         CommandeFactory,
         CommandeRepository,
         PrismaService,
+        CommandeMessageHandler,
     ],
     exports: [CommandeService],
 })

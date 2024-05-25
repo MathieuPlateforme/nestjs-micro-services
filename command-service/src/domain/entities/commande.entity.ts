@@ -43,6 +43,14 @@ export class Commande {
         return this._status;
     }
 
+    get createdAt(): Date {
+        return this._createdAt;
+    }
+
+    get updatedAt(): Date {
+        return this._updatedAt;
+    }
+
     changeStatus(newStatus: string): void {
         this._status = newStatus;
         this._updatedAt = new Date();

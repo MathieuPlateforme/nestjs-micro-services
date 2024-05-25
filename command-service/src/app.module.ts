@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { CommandesModule } from './commandes.module';
-import {CommandeMessageHandler} from "./infrastructure/messaging/commande.message.handler";
+import { CommandeMessageHandler } from './infrastructure/messaging/commande.message.handler';
 
 @Module({
   imports: [CommandesModule],
-  providers: [CommandeMessageHandler],
+  controllers: [CommandeMessageHandler], // Utilisation de controllers au lieu de providers
 })
 export class AppModule {}
