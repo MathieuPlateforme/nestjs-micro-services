@@ -1,31 +1,42 @@
-import { Body, Controller, Get, Inject, Post, Put } from '@nestjs/common';
-import { UserDto } from './user.dto';
-import { ClientProxy, EventPattern } from '@nestjs/microservices';
+import { Controller, Post, Body, Get, Param, Inject, HttpStatus, HttpException } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
+import { catchError, firstValueFrom } from 'rxjs';
 import { CreateOrderDto } from './create-order.dto';
-import { UpdateOrderDto } from './update-order.dto';
 
-@Controller()
-export class AppController {
-  constructor(@Inject('TEMPLATE-SERVICE') private readonly templateService: ClientProxy,
-              @Inject('COMMAND-SERVICE') private readonly commandService: ClientProxy) {}
+@Controller('orders')
+export class ApiGatewayController {
+    constructor(@Inject('ORDERS_SERVICE') private readonly commandService: ClientProxy) {}
 
-  @Get()
-  getHello(): string {
-    return 'Hello World!';
-  }
+    @Post('order')
+    async createOrder(@Body() createOrderDto: CreateOrderDto) {
+        try {
+            const response = await firstValueFrom(
+                this.commandService.send('create_order', createOrderDto).pipe(
+                    catchError(err => {
+                        throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+                    })
+                )
+            );
+            console.log('Order Created Event received:', response);
+            return response;
+        } catch (err) {
+            throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
-  @Post()
-  createUser(@Body() userDto: UserDto) {
-    return this.templateService.send('create_user', userDto);
-  }
-
-  @Post('orders')
-  createOrder(@Body() order: CreateOrderDto) {
-    return this.commandService.send('create_order', order);
-  }
-
-  @Put('orders')
-  updateOrder(@Body() order: UpdateOrderDto) {
-    return this.commandService.send('update_order', order);
-  }
+    @Get(':id')
+    async getOrder(@Param('id') id: string) {
+        try {
+            const response = await firstValueFrom(
+                this.commandService.send('get_order', id).pipe(
+                    catchError(err => {
+                        throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+                    })
+                )
+            );
+            return response;
+        } catch (err) {
+            throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

@@ -24,10 +24,9 @@ model Commande {
   status            String
   client            Client          @relation(fields: [clientId], references: [id])
   clientId          String
-  deliveryAddress   Address         @relation(references: [id], fields: [addressId])
+  deliveryAddress   Address         @relation(fields: [deliveryAddressId], references: [id])
   deliveryAddressId String
   lignesCommande    LigneCommande[]
-  addressId         String
 }
 
 model LigneCommande {
@@ -56,5 +55,5 @@ model Address {
   city     String
   zipCode  String
   country  String
-  Commande Commande[]
+  commandes Commande[]
 }

@@ -1,4 +1,3 @@
-// src/domain/value-objects/address.value-object.ts
 export class Address {
     constructor(
         private readonly _id: string,
@@ -34,11 +33,11 @@ export class Address {
 
     private isValidAddress(): boolean {
         return (
-            this._id.length > 0 &&
-            this._street.length > 0 &&
-            this._city.length > 0 &&
-            this._zipCode.length > 0 &&
-            this._country.length > 0
+            this._id && this._id.length > 0 &&
+            this._street && this._street.length > 0 &&
+            this._city && this._city.length > 0 &&
+            this._zipCode && this._zipCode.length > 0 &&
+            this._country && this._country.length > 0
         );
     }
 

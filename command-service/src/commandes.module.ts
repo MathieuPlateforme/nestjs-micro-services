@@ -1,25 +1,19 @@
 import { Module } from '@nestjs/common';
 
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import {CommandeRepository} from "./infrastructure/repositories/commande.repository";
 import {CommandeService} from "./domain/services/commande.service";
 import {CommandeFactory} from "./domain/factories/commande.factory";
-import {CommandeMessageHandler} from "./infrastructure/messaging/commande.message.handler";
-import {EventPublisherService} from "./infrastructure/messaging/event-publisher.service";
-import {CommandeRepository} from "./infrastructure/repositories/commande.repository";
 import {PrismaService} from "./infrastructure/prisma/prisma.service";
-
-
+import {CommandeMessageHandler} from "./infrastructure/messaging/commande.message.handler";
 @Module({
-    imports: [
-        EventEmitterModule.forRoot(),
-    ],
+    imports: [EventEmitterModule.forRoot()],
     providers: [
         CommandeService,
         CommandeFactory,
-        CommandeMessageHandler,
-        EventPublisherService,
         CommandeRepository,
-        PrismaService
+        PrismaService,
+        CommandeMessageHandler,
     ],
     exports: [CommandeService],
 })

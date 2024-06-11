@@ -1,11 +1,9 @@
-// src/messaging/event-publisher.service.ts
 import { Injectable } from '@nestjs/common';
 import { ClientProxy, ClientProxyFactory, Transport } from '@nestjs/microservices';
 import { EventEmitter2 } from 'eventemitter2';
-import {OrderCreatedEvent} from "../../common/events/order-created.event";
-import {OrderUpdatedEvent} from "../../common/events/order-updated.event";
-import {OrderCanceledEvent} from "../../common/events/order-canceled.event";
-
+import { OrderCreatedEvent } from '../../common/events/order-created.event';
+import { OrderUpdatedEvent } from '../../common/events/order-updated.event';
+import { OrderCanceledEvent } from '../../common/events/order-canceled.event';
 
 @Injectable()
 export class EventPublisherService {
@@ -13,10 +11,13 @@ export class EventPublisherService {
 
     constructor(private readonly eventEmitter: EventEmitter2) {
         this.client = ClientProxyFactory.create({
-            transport: Transport.TCP,
+            transport: Transport.RMQ,
             options: {
-                host: 'localhost',
-                port: 8080,
+                urls: ['amqp://localhost:5672'],
+                queue: 'orders-queue',
+                queueOptions: {
+                    durable: true,
+                },
             },
         });
 
@@ -26,6 +27,6 @@ export class EventPublisherService {
     }
 
     async publishEvent(eventName: string, event: any): Promise<void> {
-        await this.client.emit(eventName, event);
+        await this.client.emit(eventName, event).toPromise();
     }
 }
