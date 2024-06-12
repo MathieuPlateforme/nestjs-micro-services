@@ -2,7 +2,7 @@ import { Controller, Post, Body, Get, Param, Inject, HttpStatus, HttpException }
 import { ClientProxy } from '@nestjs/microservices';
 import { catchError, firstValueFrom } from 'rxjs';
 import { CreateOrderDto } from './create-order.dto';
-import { SignupDto } from './signup.dto';
+import { UserRegistrationDTO } from './signup.dto';
 
 @Controller('orders')
 export class ApiGatewayController {
@@ -41,7 +41,7 @@ export class ApiGatewayController {
         }
     }
     @Post('signup')
-    async signup(@Body() signupdto: SignupDto) {
+    async signup(@Body() signupdto: UserRegistrationDTO) {
         try {
             const response = await firstValueFrom(
                 this.authService.send('signup', signupdto
