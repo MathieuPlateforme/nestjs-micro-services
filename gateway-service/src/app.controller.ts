@@ -2,6 +2,7 @@ import { Controller, Post, Body, Get, Param, HttpStatus, HttpException } from '@
 import { catchError, firstValueFrom } from 'rxjs';
 import { CreateOrderDto } from './create-order.dto';
 import { AppService } from './app.service';
+import { UserRegistrationDTO } from './signup.dto';
 
 @Controller('orders')
 export class ApiGatewayController {
@@ -16,21 +17,9 @@ export class ApiGatewayController {
     async getOrder(@Param('id') id: string) {
         return this.appService.getOrder(id);;
     }
+
     @Post('signup')
     async signup(@Body() signupdto: UserRegistrationDTO) {
-        try {
-            const response = await firstValueFrom(
-                this.authService.send('signup', signupdto
-                ).pipe(
-                    catchError(err => {
-                        throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-                    })
-                )
-            );
-            console.log('utilisateur crée:', response);
-            return response;
-        } catch (err) {
-            throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+       return this.appService.signup(signupdto);
     }
 }
