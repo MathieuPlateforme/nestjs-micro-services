@@ -2,10 +2,11 @@ import { Controller, Post, Body, Get, Param, Inject, HttpStatus, HttpException }
 import { ClientProxy } from '@nestjs/microservices';
 import { catchError, firstValueFrom } from 'rxjs';
 import { CreateOrderDto } from './create-order.dto';
+import { SignupDto } from './signup.dto';
 
 @Controller('orders')
 export class ApiGatewayController {
-    constructor(@Inject('ORDERS_SERVICE') private readonly commandService: ClientProxy) {}
+    constructor(@Inject('ORDERS_SERVICE') private readonly commandService: ClientProxy,@Inject('AUTH_SERVICE')private readonly authService:ClientProxy) {}
 
     @Post('order')
     async createOrder(@Body() createOrderDto: CreateOrderDto) {
@@ -34,6 +35,23 @@ export class ApiGatewayController {
                     })
                 )
             );
+            return response;
+        } catch (err) {
+            throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @Post('signup')
+    async signup(@Body() signupdto: SignupDto) {
+        try {
+            const response = await firstValueFrom(
+                this.authService.send('signup', signupdto
+                ).pipe(
+                    catchError(err => {
+                        throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+                    })
+                )
+            );
+            console.log('utilisateur crée:', response);
             return response;
         } catch (err) {
             throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
