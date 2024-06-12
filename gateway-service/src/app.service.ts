@@ -58,6 +58,7 @@ export class AppService {
         throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
+
 async signin(signinDto: SigninDto) {
   try {
       const response = await firstValueFrom(
@@ -73,5 +74,4 @@ async signin(signinDto: SigninDto) {
   } catch (err) {
       throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
   }
-}
 }

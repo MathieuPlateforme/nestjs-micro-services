@@ -17,10 +17,12 @@ export class ApiGatewayController {
     async getOrder(@Param('id') id: string) {
         return this.appService.getOrder(id);;
     }
+
     @Post('signup')
     async signup(@Body() signupDto:UserRegistrationDTO){
         return this.appService.signup(signupDto)
     }
+  
     @Post('signin')
     async signin(@Body() signinDto:SigninDto){
         return this.appService.signin(signinDto)
