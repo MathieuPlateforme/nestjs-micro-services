@@ -7,7 +7,7 @@ export class SignupDto {
 
     @IsString()
     @IsNotEmpty()
-    pasword: string;
+    password: string;
 
     @IsString()
     @IsNotEmpty()
@@ -16,4 +16,15 @@ export class SignupDto {
     @IsString()
     @IsNotEmpty()
     lastname: string;
+}
+
+export class SigninDto{
+    @IsEmail()
+    @IsNotEmpty()
+    email: string;
+
+    @IsString()
+    @IsNotEmpty()
+    password: string;
+    
 }
