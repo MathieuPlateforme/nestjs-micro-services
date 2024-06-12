@@ -16,4 +16,21 @@ export class ApiGatewayController {
     async getOrder(@Param('id') id: string) {
         return this.appService.getOrder(id);;
     }
+    @Post('signup')
+    async signup(@Body() signupdto: UserRegistrationDTO) {
+        try {
+            const response = await firstValueFrom(
+                this.authService.send('signup', signupdto
+                ).pipe(
+                    catchError(err => {
+                        throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+                    })
+                )
+            );
+            console.log('utilisateur crée:', response);
+            return response;
+        } catch (err) {
+            throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
