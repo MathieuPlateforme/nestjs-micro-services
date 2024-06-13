@@ -24,7 +24,7 @@ export class CommandeMessageHandler {
                 throw new Error('Invalid address data');
             }
             const commande = await this.commandeService.creerCommande(clientId, address, lines);
-            this.eventEmitter.emit('OrderCreated', new OrderCreatedEvent(commande.id.value));
+            this.eventEmitter.emit('order.created', new OrderCreatedEvent(commande.id.value));
             return commande;
         } catch (error) {
             this.logger.error('Error handling create_order message', error.stack);

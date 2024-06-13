@@ -1,12 +1,14 @@
 import { Inject, Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { catchError, firstValueFrom } from 'rxjs';
-import { ClientProxy } from '@nestjs/microservices';
+import {ClientProxy, EventPattern, MessagePattern, Payload} from '@nestjs/microservices';
 import { CreateOrderDto } from './create-order.dto';
 import { SigninDto, UserRegistrationDTO } from './signup.dto';
 
 @Injectable()
 export class AppService {
-  constructor(@Inject('ORDERS_SERVICE') private readonly commandService: ClientProxy,@Inject('AUTH_SERVICE') private readonly authService:ClientProxy) {}
+  constructor(@Inject('ORDERS_SERVICE') private readonly commandService: ClientProxy,
+              @Inject('AUTH_SERVICE') private readonly authService:ClientProxy,
+              @Inject('EVENTS_SERVICE') private readonly eventsService: ClientProxy,) {}
 
 
   async createOrder(createOrderDto: CreateOrderDto) {
@@ -57,6 +59,8 @@ export class AppService {
     } catch (err) {
         throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+
 }
 
 async signin(signinDto: SigninDto) {
@@ -91,4 +95,26 @@ async signin(signinDto: SigninDto) {
         throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }
+
+    @MessagePattern('order.created')
+    async handleOrderCreated(@Payload() data: any) {
+        console.log('Order Created Event received SERVICE:', data);
+        // Traitez l'événement de création de commande ici
+        //
+        //
+        //
+    }
+
+    @MessagePattern('order.updated')
+    async handleOrderUpdated(@Payload() data: any) {
+        console.log('Order Updated Event received:', data);
+        // Traitez l'événement de mise à jour de commande ici
+    }
+
+    @MessagePattern('order.canceled')
+    async handleOrderCanceled(@Payload() data: any) {
+        console.log('Order Canceled Event received:', data);
+        // Traitez l'événement d'annulation de commande ici
+    }
+
 }
