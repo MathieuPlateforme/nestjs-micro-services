@@ -30,7 +30,9 @@ export class AuthService {
       throw new Error('Invalid credentials');
     }
     const payload = { email: user.email, sub: user.id };
-    const access_token = this.jwtService.sign(payload);
+    console.log('coucou')
+
+    const access_token = this.jwtService.sign(payload,{secret:process.env.JWT_SECRET});
     return { access_token };
   }
   async info(id: number): Promise<any> {
