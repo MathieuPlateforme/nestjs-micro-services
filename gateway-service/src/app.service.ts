@@ -1,3 +1,4 @@
+// src/app.service.ts
 import { Inject, Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { catchError, firstValueFrom } from 'rxjs';
 import {ClientProxy, EventPattern, MessagePattern, Payload} from '@nestjs/microservices';
@@ -133,6 +134,22 @@ async signin(signinDto: SigninDto) {
     async handleOrderCanceled(@Payload() data: any) {
         console.log('Order Canceled Event received:', data);
         // Traitez l'événement d'annulation de commande ici
+    }
+
+
+    async getAllProducts() {
+        try {
+            const response = await firstValueFrom(
+                this.commandService.send('get_all_products', {}).pipe(
+                    catchError(err => {
+                        throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+                    })
+                )
+            );
+            return response;
+        } catch (err) {
+            throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 

@@ -1,7 +1,10 @@
+// src/app.module.ts
 import { Module } from '@nestjs/common';
+
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AppService } from './app.service';
 import { ApiGatewayController } from './app.controller';
+import {ApiGatewayProduitController} from "./produit.controller";
 
 @Module({
   imports: [
@@ -41,7 +44,7 @@ import { ApiGatewayController } from './app.controller';
       },
     ]),
   ],
-  controllers: [ApiGatewayController],
+  controllers: [ApiGatewayController, ApiGatewayProduitController],
   providers: [AppService],
 })
 export class AppModule {}

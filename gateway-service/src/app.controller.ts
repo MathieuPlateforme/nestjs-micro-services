@@ -1,3 +1,5 @@
+// src/app.controller.ts
+
 import {Controller, Post, Body, Get, Param, HttpStatus, HttpException, Delete} from '@nestjs/common';
 import { catchError, firstValueFrom } from 'rxjs';
 import { CreateOrderDto } from './create-order.dto';
@@ -23,9 +25,6 @@ export class ApiGatewayController {
     async deleteOrder(@Param('id') id: string) {
         return this.appService.deleteOrder(id);
     }
-
-
-
     @Post('signup')
     async signup(@Body() signupDto:UserRegistrationDTO){
         return this.appService.signup(signupDto)

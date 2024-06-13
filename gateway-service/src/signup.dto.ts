@@ -1,4 +1,8 @@
+// src/signup.dto.ts
+
 import { IsEmail, IsNotEmpty, IsString } from "class-validator";
+
+
 
 export class UserRegistrationDTO {
     @IsEmail()
