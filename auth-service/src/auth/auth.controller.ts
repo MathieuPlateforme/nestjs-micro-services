@@ -6,6 +6,7 @@ import { UserCreateEvent } from 'src/event/events/user-created.event';
 import { EventEmitter2 } from 'eventemitter2';
 import { SigninDto } from 'src/entities/userEntity/signup.dto';
 import { UserSynchroEvent } from 'src/event/events/user-synchro.event';
+import { MailDTO } from 'src/entities/mail.DTO';
 
 @Controller('auth')
 export class AuthController {
@@ -29,6 +30,14 @@ export class AuthController {
 
             const createUser = await this.authService.register(signupDto);
             this.eventEmitter.emit('Usercreated', new UserCreateEvent(createUser.id, createUser.email));
+            const dto=new MailDTO;
+            dto.to=createUser.email,
+            dto.subject='Utilisateur créer'
+            dto.text='Vous avez bien créer votre compte,Bienvenue chez nous!'
+            this.eventEmitter.emit('send_mail',dto)
+                
+
+            
             return createUser;
         } catch (error) {
             throw error;
