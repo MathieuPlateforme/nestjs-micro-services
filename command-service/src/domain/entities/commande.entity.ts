@@ -1,6 +1,6 @@
 // src/domain/entities/commande.entity.ts
 import { OrderID } from '../value-objects/order-id.value-object';
-import { ClientID } from '../value-objects/client-id.value-object';
+import { ClientIDUser } from '../value-objects/client-idUser.value-object';
 import { Address } from '../value-objects/address.value-object';
 import { LigneCommande } from './ligne-commande.entity';
 
@@ -11,7 +11,7 @@ export class Commande {
 
     constructor(
         private readonly _id: OrderID,
-        private readonly _clientId: ClientID,
+        private readonly _clientIdUser: ClientIDUser,
         private readonly _deliveryAddress: Address,
         private _lines: LigneCommande[],
         status: string = 'Created',
@@ -27,8 +27,8 @@ export class Commande {
         return this._id;
     }
 
-    get clientId(): ClientID {
-        return this._clientId;
+    get clientIdUser(): ClientIDUser {
+        return this._clientIdUser;
     }
 
     get deliveryAddress(): Address {

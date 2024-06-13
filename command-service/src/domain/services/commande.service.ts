@@ -23,11 +23,11 @@ export class CommandeService {
         private readonly eventPublisher: EventPublisherService // Inject EventPublisherService
     ) {}
 
-    async creerCommande(clientId: string, address: CreateOrderDto['address'], lignes: CreateOrderDto['lines']): Promise<Commande> {
+    async creerCommande(clientIdUser: number, address: CreateOrderDto['address'], lignes: CreateOrderDto['lines']): Promise<Commande> {
         const addressVo = new Address(address.id, address.street, address.city, address.zipCode, address.country);
         const lignesVo = lignes.map(line => new LigneCommande(new ProductID(line.productId), line.quantity, new Money(line.price, line.currency)));
 
-        const commande = this.commandeFactory.createCommande(clientId, addressVo, lignesVo);
+        const commande = this.commandeFactory.createCommande(clientIdUser, addressVo, lignesVo);
         await this.commandeRepository.save(commande);
         return commande;
     }
@@ -53,8 +53,7 @@ export class CommandeService {
         const commande = await this.commandeRepository.findById(orderIdVo);
         if (commande) {
             commande.changeStatus('Canceled');
-            await this.commandeRepository.save(commande);
-            this.eventEmitter.emit('order.canceled', new OrderCanceledEvent(orderId));
+               await this.commandeRepository.delete(orderIdVo);
            await this.eventPublisher.publishEvent('order.canceled', new OrderCanceledEvent(orderId)); // Publish event
         }
     }

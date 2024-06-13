@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param, HttpStatus, HttpException } from '@nestjs/common';
+import {Controller, Post, Body, Get, Param, HttpStatus, HttpException, Delete} from '@nestjs/common';
 import { catchError, firstValueFrom } from 'rxjs';
 import { CreateOrderDto } from './create-order.dto';
 import { AppService } from './app.service';
@@ -19,6 +19,13 @@ export class ApiGatewayController {
         return this.appService.getOrder(id);
     }
 
+    @Delete(':id')
+    async deleteOrder(@Param('id') id: string) {
+        return this.appService.deleteOrder(id);
+    }
+
+
+
     @Post('signup')
     async signup(@Body() signupDto:UserRegistrationDTO){
         return this.appService.signup(signupDto)
@@ -37,6 +44,24 @@ export class ApiGatewayController {
     async handleOrderCreated(@Payload() data: any) {
         console.log('Order Created Event received:', data);
         // Traitez l'événement de création de commande ici
+        //
+        //
+        //
+    }
+
+    @EventPattern('order.updated')
+    async handleOrderUpdated(@Payload() data: any) {
+        console.log('Order Updated Event received:', data);
+        // Traitez l'événement de mise à jour de commande ici
+        //
+        //
+        //
+    }
+
+    @EventPattern('order.canceled')
+    async handleOrderCanceled(@Payload() data: any) {
+        console.log('Order Canceled Event received:', data);
+        // Traitez l'événement d'annulation de commande ici
         //
         //
         //

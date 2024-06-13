@@ -4,7 +4,7 @@ import { OrderID } from '../../domain/value-objects/order-id.value-object';
 import { LigneCommande } from '../../domain/entities/ligne-commande.entity';
 import { ProductID } from '../../domain/value-objects/product-id.value-object';
 import { Money } from '../../domain/value-objects/money.value-object';
-import { ClientID } from '../../domain/value-objects/client-id.value-object';
+import { ClientIDUser } from '../../domain/value-objects/client-idUser.value-object';
 import { Address as AddressValueObject } from '../../domain/value-objects/address.value-object';
 import { PrismaService } from '../prisma/prisma.service';
 import {Inject, Logger} from '@nestjs/common';
@@ -37,10 +37,15 @@ export class CommandeRepository {
         await this.prisma.commande.create({ data: createData });
     }
 
+    async delete(orderId: OrderID): Promise<void> {
+        await this.prisma.commande.delete({ where: { id: orderId.value } });
+    }
+
     private toPrismaCreate(commande: Commande): Prisma.CommandeCreateInput {
+        // @ts-ignore
         const data: Prisma.CommandeCreateInput = {
             id: commande.id.value,
-            client: { connect: { id: commande.clientId.value } },
+            client: { connect: { idUser: commande.clientIdUser.value } },
             deliveryAddress: { connect: { id: commande.deliveryAddress.id } },
             status: commande.status,
             lignesCommande: {
@@ -73,7 +78,7 @@ export class CommandeRepository {
 
         return new Commande(
             new OrderID(prismaCommande.id),
-            new ClientID(prismaCommande.clientId),
+            new ClientIDUser(prismaCommande.client.idUser),
             address,
             lines,
             prismaCommande.status,

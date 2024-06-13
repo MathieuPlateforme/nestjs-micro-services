@@ -23,7 +23,7 @@ export class EventPublisherService {
 
         this.eventEmitter.on('order.created', (event: OrderCreatedEvent) => this.publishEvent('order.created', event));
         this.eventEmitter.on('order.updated', (event: OrderUpdatedEvent) => this.publishEvent('order.updated', event));
-        this.eventEmitter.on('order.canceled', (event: OrderCanceledEvent) => this.publishEvent('order.canceled', event));
+        this.eventEmitter.on('orderCanceled', (event: OrderCanceledEvent) => this.publishEvent('order.canceled', event));
     }
 
     async publishEvent(eventName: string, event: any): Promise<void> {

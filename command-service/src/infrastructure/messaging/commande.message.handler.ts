@@ -19,11 +19,11 @@ export class CommandeMessageHandler {
     @MessagePattern('create_order')
     async handleCreateOrder(createOrderDto: CreateOrderDto) {
         try {
-            const { clientId, address, lines } = createOrderDto;
+            const { clientIdUser, address, lines } = createOrderDto;
             if (!address || !address.id || !address.street || !address.city || !address.zipCode || !address.country) {
                 throw new Error('Invalid address data');
             }
-            const commande = await this.commandeService.creerCommande(clientId, address, lines);
+            const commande = await this.commandeService.creerCommande(clientIdUser, address, lines);
             this.eventEmitter.emit('order.created', new OrderCreatedEvent(commande.id.value));
             return commande;
         } catch (error) {
@@ -58,6 +58,7 @@ export class CommandeMessageHandler {
         try {
             await this.commandeService.cancelCommande(orderId);
             this.eventEmitter.emit('OrderCanceled', new OrderCanceledEvent(orderId));
+            return { message: 'Order canceled' };
         } catch (error) {
             this.logger.error('Error handling cancel_order message', error.stack);
             throw error;

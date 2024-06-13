@@ -44,6 +44,24 @@ export class AppService {
         throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+    async deleteOrder(id: string) {
+      try {
+                const response = await firstValueFrom(
+                    this.commandService.send('cancel_order', id).pipe(
+                        catchError(err => {
+                            throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+                        })
+                    )
+                );
+                return response;
+            } catch (err) {
+                throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+    }
+
+
+
   async signup(signupdto: UserRegistrationDTO) {
     try {
         const response = await firstValueFrom(
@@ -116,5 +134,6 @@ async signin(signinDto: SigninDto) {
         console.log('Order Canceled Event received:', data);
         // Traitez l'événement d'annulation de commande ici
     }
+
 
 }

@@ -39,9 +39,9 @@ class CreateAddressDto {
 }
 
 export class CreateOrderDto {
-    @IsString()
+    @IsNumber()
     @IsNotEmpty()
-    clientId: string;
+    clientIdUser: number;
 
     @IsObject()
     @ValidateNested()
