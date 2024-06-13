@@ -75,3 +75,20 @@ async signin(signinDto: SigninDto) {
       throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }
+  async info(id:Number){
+    try{
+        const response = await firstValueFrom(
+            this.authService.send('info', id
+            ).pipe(
+                catchError(err => {
+                    throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+                })
+            )
+        );
+        console.log('user info:', response);
+        return response;
+    } catch (err) {
+        throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+}
+}

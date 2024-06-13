@@ -27,4 +27,8 @@ export class ApiGatewayController {
     async signin(@Body() signinDto:SigninDto){
         return this.appService.signin(signinDto)
     }
+    @Post('info')
+    async info(@Body() id:number){
+        return this.appService.info(id)
+    }
 }

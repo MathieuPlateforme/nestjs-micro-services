@@ -10,7 +10,7 @@ export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService
-  ) {}
+  ) { }
 
   async validateUser(email: string, password: string): Promise<User | null> {
     const user = await this.userService.findOneByEmail(email);
@@ -32,5 +32,12 @@ export class AuthService {
     const payload = { email: user.email, sub: user.id };
     const access_token = this.jwtService.sign(payload);
     return { access_token };
+  }
+  async info(id: number): Promise<any> {
+    const user = await this.userService.findOne(id)
+    if (!user) {
+      throw new Error('il nya pas de user')
+    }
+    return user
   }
 }
