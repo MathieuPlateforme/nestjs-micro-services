@@ -5,6 +5,7 @@ import { UserRegistrationDTO } from 'src/entities/userEntity/UserRegistrationDTO
 import { UserCreateEvent } from 'src/event/events/user-created.event';
 import { EventEmitter2 } from 'eventemitter2';
 import { SigninDto } from 'src/entities/userEntity/signup.dto';
+import { UserSynchroEvent } from 'src/event/events/user-synchro.event';
 
 @Controller('auth')
 export class AuthController {
@@ -27,7 +28,7 @@ export class AuthController {
             }
 
             const createUser = await this.authService.register(signupDto);
-            this.eventEmitter.emit('User created', new UserCreateEvent(createUser.id, createUser.email));
+            this.eventEmitter.emit('Usercreated', new UserCreateEvent(createUser.id, createUser.email));
             return createUser;
         } catch (error) {
             throw error;
@@ -37,6 +38,17 @@ export class AuthController {
     async handleSignin(signinDto: SigninDto) {
         try {
             const result = await this.authService.login(signinDto);
+            return result;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    @MessagePattern('info')
+    async handleInfo(id: number) {
+        try {
+            const result = await this.authService.info(id);
+            this.eventEmitter.emit('synchro_auth', new UserSynchroEvent(result.id, result.email,result.firstname,result.lastname));
             return result;
         } catch (error) {
             throw error;

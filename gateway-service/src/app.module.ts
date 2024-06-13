@@ -22,14 +22,6 @@ import { AppService } from './app.service';
           queue: 'auth-queue',
         },
       },
-      {
-        name: 'AUTH_SERVICE',
-        transport: Transport.RMQ,
-        options: {
-          urls: ['amqp://localhost:5672'],
-          queue: 'auth-queue',
-        },
-      }
     ]),
   ],
   controllers: [ApiGatewayController],
