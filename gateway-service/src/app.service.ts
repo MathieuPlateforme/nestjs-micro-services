@@ -9,7 +9,8 @@ import { SigninDto, UserRegistrationDTO } from './signup.dto';
 export class AppService {
   constructor(@Inject('ORDERS_SERVICE') private readonly commandService: ClientProxy,
               @Inject('AUTH_SERVICE') private readonly authService:ClientProxy,
-              @Inject('EVENTS_SERVICE') private readonly eventsService: ClientProxy,) {}
+              @Inject('EVENTS_SERVICE') private readonly eventsService: ClientProxy,
+            @Inject('MAILS_SERVICE')private readonly mailService: ClientProxy,) {}
 
 
   async createOrder(createOrderDto: CreateOrderDto) {
@@ -73,7 +74,6 @@ export class AppService {
                 })
             )
         );
-        console.log('utilisateur crée:', response);
         return response;
     } catch (err) {
         throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -152,5 +152,20 @@ async signin(signinDto: SigninDto) {
         }
     }
 
-
+    async handleMail(data:any){
+        try{
+            const response = await firstValueFrom(
+                this.mailService.send('send_mail', data
+                ).pipe(
+                    catchError(err => {
+                        throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+                    })
+                )
+            );
+            console.log('user info:', response);
+            return response;
+        } catch (err) {
+            throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
 }

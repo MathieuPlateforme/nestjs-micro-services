@@ -7,13 +7,15 @@ import { User } from 'src/entities/userEntity/user.entity';
 import { UserService } from 'src/entities/userEntity/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { EventPublisherService } from 'src/event.publisher.service';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User, Roles]),
     EventEmitterModule.forRoot(),
+   
   ],
-  providers: [AuthService, JwtService, UserService],
+  providers: [AuthService, JwtService, UserService, EventPublisherService,],
   controllers: [AuthController],
 })
 export class AuthModule {}

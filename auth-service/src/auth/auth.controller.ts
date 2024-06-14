@@ -7,12 +7,14 @@ import { EventEmitter2 } from 'eventemitter2';
 import { SigninDto } from 'src/entities/userEntity/signup.dto';
 import { UserSynchroEvent } from 'src/event/events/user-synchro.event';
 import { MailDTO } from 'src/entities/mail.DTO';
+import { EventPublisherService } from 'src/event.publisher.service';
 
 @Controller('auth')
 export class AuthController {
     constructor(
         private readonly authService: AuthService,
-        private readonly eventEmitter: EventEmitter2
+        private readonly eventEmitter: EventEmitter2,
+        private readonly eventPublisher:EventPublisherService,
     ) { }
 
     @MessagePattern('signup')
@@ -30,6 +32,7 @@ export class AuthController {
 
             const createUser = await this.authService.register(signupDto);
             this.eventEmitter.emit('Usercreated', new UserCreateEvent(createUser.id, createUser.email));
+            await this.eventPublisher.publishEvent('Usercreated',new UserCreateEvent(createUser.id, createUser.email))
             const dto=new MailDTO;
             dto.to=createUser.email,
             dto.subject='Utilisateur créer'

@@ -11,8 +11,8 @@ export class AppService {
     port: 587,
     secure: false,
     auth: {
-        user: 'marian.emard@ethereal.email',
-        pass: 'QkYxH58FWyEGfDn4BN',
+        user: 'charles61@ethereal.email',
+        pass: 'zx75cYunyddatCCknc',
     },
   })
 
