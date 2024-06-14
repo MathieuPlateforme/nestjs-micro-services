@@ -32,7 +32,6 @@ export class AuthController {
 
             const createUser = await this.authService.register(signupDto);
             this.eventEmitter.emit('Usercreated', new UserCreateEvent(createUser.id, createUser.email));
-            await this.eventPublisher.publishEvent('Usercreated',new UserCreateEvent(createUser.id, createUser.email))
             const dto=new MailDTO;
             dto.to=createUser.email,
             dto.subject='Utilisateur créer'
