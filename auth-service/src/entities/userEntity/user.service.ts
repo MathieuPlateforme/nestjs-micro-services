@@ -39,6 +39,7 @@ export class UserService {
     }
 
     async remove(id: number): Promise<void> {
+        console.log(`Supression de l'utilisateur avec l'id ${id}`)
         await this.userRepository.delete(id);
     }
 }

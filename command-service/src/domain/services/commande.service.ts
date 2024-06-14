@@ -13,6 +13,8 @@ import { OrderID } from '../value-objects/order-id.value-object';
 import { ProductID } from '../value-objects/product-id.value-object';
 import { Money } from '../value-objects/money.value-object';
 import { EventPublisherService } from '../../infrastructure/messaging/event-publisher.service'; // Import EventPublisherService
+import { ClientDto } from 'src/api/dto/client.dto';
+import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 
 @Injectable()
 export class CommandeService {
@@ -20,8 +22,13 @@ export class CommandeService {
         private readonly commandeRepository: CommandeRepository,
         private readonly eventEmitter: EventEmitter2,
         private readonly commandeFactory: CommandeFactory,
-        private readonly eventPublisher: EventPublisherService // Inject EventPublisherService
+        private readonly eventPublisher: EventPublisherService,
+        private prisma: PrismaService // Inject EventPublisherService
     ) {}
+
+    async createClient(client: ClientDto): Promise<ClientDto> {
+        return this.prisma.client.create({ data: client });
+    }
 
     async creerCommande(clientIdUser: number, address: CreateOrderDto['address'], lignes: CreateOrderDto['lines']): Promise<Commande> {
         const addressVo = new Address(address.id, address.street, address.city, address.zipCode, address.country);

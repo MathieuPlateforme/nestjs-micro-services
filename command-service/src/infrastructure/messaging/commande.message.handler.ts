@@ -2,6 +2,7 @@ import { Controller, Logger } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { CommandeService } from '../../domain/services/commande.service';
 import { CreateOrderDto } from '../../api/dto/create-order.dto';
+import { ClientDto } from '../../api/dto/client.dto';
 import { EventEmitter2 } from 'eventemitter2';
 import { OrderCreatedEvent } from '../../common/events/order-created.event';
 import { OrderUpdatedEvent } from '../../common/events/order-updated.event';
@@ -28,6 +29,17 @@ export class CommandeMessageHandler {
             return commande;
         } catch (error) {
             this.logger.error('Error handling create_order message', error.stack);
+            throw error;
+        }
+    }
+
+    @MessagePattern('create_client')
+    async handleCreateClient(client: ClientDto) {
+        try {
+            // throw new Error('Not implemented'); pour tester le pattern saga
+            return await this.commandeService.createClient(client);
+        } catch (error) {
+            this.logger.error('Error handling create_client message', error.stack);
             throw error;
         }
     }

@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://root:toto@localhost:3306/commandService"
+  url      = "mysql://root:@localhost:3306/commandService"
 }
 
 model Client {

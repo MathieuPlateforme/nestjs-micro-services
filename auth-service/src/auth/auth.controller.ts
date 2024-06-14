@@ -8,11 +8,13 @@ import { SigninDto } from 'src/entities/userEntity/signup.dto';
 import { UserSynchroEvent } from 'src/event/events/user-synchro.event';
 import { MailDTO } from 'src/entities/mail.DTO';
 import { EventPublisherService } from 'src/event.publisher.service';
+import { UserService } from 'src/entities/userEntity/user.service';
 
 @Controller('auth')
 export class AuthController {
     constructor(
         private readonly authService: AuthService,
+        private readonly userService: UserService,
         private readonly eventEmitter: EventEmitter2,
         private readonly eventPublisher:EventPublisherService,
     ) { }
@@ -37,7 +39,7 @@ export class AuthController {
             dto.subject='Utilisateur créer'
             dto.text='Vous avez bien créer votre compte,Bienvenue chez nous!'
             this.eventEmitter.emit('send_mail',dto)
-                
+            console.log(createUser);
 
             
             return createUser;
@@ -60,6 +62,15 @@ export class AuthController {
         try {
             const result = await this.authService.info(id);
             this.eventEmitter.emit('synchro_auth', new UserSynchroEvent(result.id, result.email,result.firstname,result.lastname));
+            return result;
+        } catch (error) {
+            throw error;
+        }
+    }
+    @MessagePattern('delete_user')
+    async handleDeleteUser(id: number) {
+        try {
+            const result = await this.userService.remove(id);
             return result;
         } catch (error) {
             throw error;

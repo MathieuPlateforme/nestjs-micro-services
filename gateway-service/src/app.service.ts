@@ -64,23 +64,38 @@ export class AppService {
 
 
 
-  async signup(signupdto: UserRegistrationDTO) {
-    try {
-        const response = await firstValueFrom(
-            this.authService.send('signup', signupdto
-            ).pipe(
-                catchError(err => {
-                    throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
-                })
-            )
-        );
-        return response;
-    } catch (err) {
-        throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    async signup(signupdto: UserRegistrationDTO) {
+        try {
+            const response = await firstValueFrom(
+                this.authService.send('signup', signupdto).pipe(
+                    catchError(err => {
+                        throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+                    })
+                )
+            );
+    
+            await firstValueFrom(
+                this.commandService.send('create_client', {
+                    idUser: response.id,
+                    name: response.firstname,
+                    email: response.email
+                }).pipe(
+                    catchError(async err => {
+                        console.log('Error during create_client:', err);
+    
+                        await firstValueFrom(this.authService.send('delete_user', response.id));
+    
+                        throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+                    })
+                )
+            );
+    
+            return response;
+        } catch (err) {
+            console.log('Caught error:', err);
+            throw new HttpException(err.message, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-
-
-}
 
 async signin(signinDto: SigninDto) {
   try {
